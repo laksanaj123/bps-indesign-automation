@@ -29,20 +29,20 @@ output_folder = "generate_jsx"
 os.makedirs(output_folder, exist_ok=True)
 
 for nama_kecamatan, group in grouped:
-    # print(nama_kecamatan)
-    script = template  # copy template
-    first = group.iloc[0]
-
-    metadata = build_metadata(nama_kecamatan, first)
-    # print(metadata)
-
-    for key, value in metadata.items():
-        script = script.replace(f"{{{key}}}", str(value))
-
     # Filter Data desa
     dataDesa = dfDataDesa[dfDataDesa["namaKecamatan"] == nama_kecamatan].sort_values(by='kodeDesa')
     dataKesehatan = dfDataKesehatan[dfDataKesehatan["namaKecamatan"] == nama_kecamatan].sort_values(by='kodeDesa')
     dataMerge = dfDataMerge[dfDataMerge["namaKecamatan"] == nama_kecamatan]
+    # print(nama_kecamatan)
+    script = template  # copy template
+    first = group.iloc[0]
+
+    metadata = build_metadata(nama_kecamatan, first, group, dataDesa, dataKesehatan, dataMerge)
+    # print(metadata)
+
+    for key, value in metadata.items():
+        script = script.replace(f"{{{key}}}", str(value))
+        
     # print(dataMerge)
     script = inject_tables(script, group, dataDesa, dataKesehatan, dataMerge)
 

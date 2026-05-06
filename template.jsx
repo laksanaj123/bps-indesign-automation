@@ -13,11 +13,18 @@ var data = {
     namaLayouter: '{namaLayouter}',
     namaPenerjemah: '{namaPenerjemah}',
     namaPemeriksa: '{namaPemeriksa}',
+    tabel222lakiLaki: '{tabel222lakiLaki}',
+    tabel222perempuan: '{tabel222perempuan}',
+    tabel222total: '{tabel222total}',
+    tabel223lakiLaki: '{tabel223lakiLaki}',
+    tabel223perempuan: '{tabel223perempuan}',
+    tabel223total: '{tabel223total}',
 };
 
 var tabel1_1 = {tabel1_1};
 var tabel1_2 = {tabel1_2};
 var tabel2_2_2 = {tabel2_2_2};
+var tabel2_2_3 = {tabel2_2_3};
 
 // ... tambahkan tabel lain jika perlu
 
@@ -92,6 +99,7 @@ function isiTabel(placeholder, dataArr, colMap) {
 isiTabel("Tabel_1_1", tabel1_1, ["desa","luas","persen"]);
 isiTabel("Tabel_1_2", tabel1_2, ["desa","jarak_kec","jarak_kab"]);
 isiTabel("tabel2_2_2", tabel2_2_2, ["tingkatPendidikan","lakiLaki","perempuan","total"]);
+isiTabel("tabel2_2_3", tabel2_2_3, ["tingkatPendidikan","lakiLaki","perempuan","total"]);
 // ... panggil isiTabel untuk tabel lain jika perlu
 
 alert("{namaKecamatan} Selesai!");
