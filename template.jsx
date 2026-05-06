@@ -3,22 +3,22 @@
 var doc = app.activeDocument;
 
 var data = {
-    namaKecamatan: "{namaKecamatan}",
-    namaKec_Kapital: "{namaKec_Kapital}",
-    nomorVolume: "{nomorVolume}",
-    nomorKatalog: "{nomorKatalog}",
-    nomorPublikasi: "{nomorPublikasi}",
-    jumlahHalaman: "{jumlahHalaman}",
-    sumberIlustrasi: "{sumberIlustrasi}",
-    namaPenyunting: "{namaPenyunting}",
-    namaPenulis: "{namaPenulis}",
-    namaLayouter: "{namaLayouter}",
-    namaInfografis: "{namaInfografis}",
-    namaPenerjemah: "{namaPenerjemah}"
+    namaKecamatan: '{namaKecamatan}',
+    namaKec_Kapital: '{namaKec_Kapital}',
+    nomorVolume: '{nomorVolume}',
+    nomorKatalog: '{nomorKatalog}',
+    nomorPublikasi: '{nomorPublikasi}',
+    namaPenyunting: '{namaPenyunting}',
+    namaPenulis: '{namaPenulis}',
+    namaLayouter: '{namaLayouter}',
+    namaPenerjemah: '{namaPenerjemah}',
+    namaPemeriksa: '{namaPemeriksa}',
 };
 
 var tabel1_1 = {tabel1_1};
 var tabel1_2 = {tabel1_2};
+var tabel2_2_2 = {tabel2_2_2};
+
 // ... tambahkan tabel lain jika perlu
 
 app.findTextPreferences = NothingEnum.nothing;
@@ -91,6 +91,7 @@ function isiTabel(placeholder, dataArr, colMap) {
 
 isiTabel("Tabel_1_1", tabel1_1, ["desa","luas","persen"]);
 isiTabel("Tabel_1_2", tabel1_2, ["desa","jarak_kec","jarak_kab"]);
+isiTabel("tabel2_2_2", tabel2_2_2, ["tingkatPendidikan","lakiLaki","perempuan","total"]);
 // ... panggil isiTabel untuk tabel lain jika perlu
 
 alert("{namaKecamatan} Selesai!");

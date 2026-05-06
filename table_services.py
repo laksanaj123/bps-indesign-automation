@@ -1,11 +1,11 @@
 import json
 from table_builders import TABLE_BUILDERS
 
-def inject_tables(script, group):
+def inject_tables(script, group, dataDesa, dataKesehatan, dataMerge):
 
     for key, func in TABLE_BUILDERS.items():
 
-        result = func(group)
+        result = func(group, dataDesa, dataKesehatan, dataMerge)
 
         if isinstance(result, dict):
 

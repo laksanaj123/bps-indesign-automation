@@ -3,65 +3,48 @@ import numpy as np
 import os
 import requests
 from io import StringIO
-import json
 
 from table_services import inject_tables
 from metadata_services import build_metadata
 
-url = "https://docs.google.com/spreadsheets/d/1UD76pvPEv7q4Fe0o83V3vulwzboGg3fm06YtbMYaUFQ/export?format=csv&gid=903602598"
+urlDataCamat = "https://docs.google.com/spreadsheets/d/1Af1w1gRUrdC_jCnVJC6B_0jNyv5kkRJJuGxU79849u8/export?format=csv&gid=1534607447"
+dfDataCamat = pd.read_csv(urlDataCamat)
 
-response = requests.get(url)
+urlDataDesa = "https://docs.google.com/spreadsheets/d/1Af1w1gRUrdC_jCnVJC6B_0jNyv5kkRJJuGxU79849u8/export?format=csv&gid=0"
+dfDataDesa = pd.read_csv(urlDataDesa)
 
-if response.status_code != 200:
-    raise Exception("Gagal akses spreadsheet. Cek permission / gid.")
+urlDataKesehatan = "https://docs.google.com/spreadsheets/d/1Af1w1gRUrdC_jCnVJC6B_0jNyv5kkRJJuGxU79849u8/export?format=csv&gid=745448590"
+dfDataKesehatan = pd.read_csv(urlDataKesehatan)
 
-csv_data = StringIO(response.text)
-
-df = pd.read_csv(csv_data, encoding='utf-8')
-df.head()
-
-df["namaPenyunting_joint"] = df["namaPenyunting"].str.replace(", ", " • ")
-df["namaPenulis_joint"] = df["namaPenulis"].str.replace(", ", " • ")
-df["namaLayouter_joint"] = df["namaLayouter"].str.replace(", ", " • ")
-df["namaInfografis_joint"] = df["namaInfografis"].str.replace(", ", " • ")
-df["namaPenerjemah_joint"] = df["namaPenerjemah"].str.replace(", ", " • ")
-
-df.head()
-
-url = "https://docs.google.com/spreadsheets/d/14br7OEiGZJKN_NBUKmDpnWO2P9CsXlruk__m1O29brg/export?format=csv&gid=583286261"
-
-response = requests.get(url)
-
-if response.status_code != 200:
-    raise Exception("Gagal akses spreadsheet. Cek permission / gid.")
-
-csv_data = StringIO(response.text)
-
-data_kcda2026 = pd.read_csv(csv_data, encoding='utf-8')
-data_kcda2026.head()
-
-data_kcda2026.info()
+urlDataMerge = "https://docs.google.com/spreadsheets/d/1Af1w1gRUrdC_jCnVJC6B_0jNyv5kkRJJuGxU79849u8/export?format=csv&gid=772750983"
+dfDataMerge = pd.read_csv(urlDataMerge)
 
 # grouping desa per kecamatan
-grouped = data_kcda2026.groupby("namaKecamatan")
+grouped = dfDataCamat.groupby("namaKecamatan")
 
-with open("template_new.jsx", "r", encoding="utf-8") as f:
+with open("template.jsx", "r", encoding="utf-8") as f:
     template = f.read()
 
 output_folder = "generate_jsx"
 os.makedirs(output_folder, exist_ok=True)
 
 for nama_kecamatan, group in grouped:
-
+    # print(nama_kecamatan)
     script = template  # copy template
     first = group.iloc[0]
 
     metadata = build_metadata(nama_kecamatan, first)
+    # print(metadata)
 
     for key, value in metadata.items():
         script = script.replace(f"{{{key}}}", str(value))
 
-    script = inject_tables(script, group)
+    # Filter Data desa
+    dataDesa = dfDataDesa[dfDataDesa["namaKecamatan"] == nama_kecamatan].sort_values(by='kodeDesa')
+    dataKesehatan = dfDataKesehatan[dfDataKesehatan["namaKecamatan"] == nama_kecamatan].sort_values(by='kodeDesa')
+    dataMerge = dfDataMerge[dfDataMerge["namaKecamatan"] == nama_kecamatan]
+    # print(dataMerge)
+    script = inject_tables(script, group, dataDesa, dataKesehatan, dataMerge)
 
     filename = f"{nama_kecamatan}.jsx"
     filepath = os.path.join(output_folder, filename)

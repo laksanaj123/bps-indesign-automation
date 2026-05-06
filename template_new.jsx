@@ -6,22 +6,21 @@ var doc = app.activeDocument;
 // DATA DARI PYTHON
 // ==========================
 var data = {
-    namaKecamatan: "{namaKecamatan}",
-    namaKec_Kapital: "{namaKec_Kapital}",
-    nomorVolume: "{nomorVolume}",
-    nomorKatalog: "{nomorKatalog}",
-    nomorPublikasi: "{nomorPublikasi}",
-    jumlahHalaman: "{jumlahHalaman}",
-    sumberIlustrasi: "{sumberIlustrasi}",
-    namaPenyunting: "{namaPenyunting}",
-    namaPenulis: "{namaPenulis}",
-    namaLayouter: "{namaLayouter}",
-    namaInfografis: "{namaInfografis}",
-    namaPenerjemah: "{namaPenerjemah}"
+    namaKecamatan: '{namaKecamatan}',
+    namaKec_Kapital: '{namaKec_Kapital}',
+    nomorVolume: '{nomorVolume}',
+    nomorKatalog: '{nomorKatalog}',
+    nomorPublikasi: '{nomorPublikasi}',
+    namaPenyunting: '{namaPenyunting}',
+    namaPenulis: '{namaPenulis}',
+    namaLayouter: '{namaLayouter}',
+    namaPenerjemah: '{namaPenerjemah}',
+    namaPemeriksa: '{namaPemeriksa}',
 };
 
 var tabel1_1 = {tabel1_1};
 var tabel1_2 = {tabel1_2};
+var tabel2_2_2 = {tabel2_2_2};
 
 // ==========================
 // REPLACE TEXT GLOBAL
@@ -156,7 +155,8 @@ function isiTabelMultiPage(placeholder, dataArr, colMap, maxRows) {
 // EKSEKUSI
 // ==========================
 
-isiTabelMultiPage("Tabel_1_1", tabel1_1, ["desa","luas","persen"], 20);
-isiTabelMultiPage("Tabel_1_2", tabel1_2, ["desa","jarak_kec","jarak_kab"], 20);
+isiTabelMultiPage("Tabel_1_1", tabel1_1, ["desa","luas","persen"], 30);
+isiTabelMultiPage("Tabel_1_2", tabel1_2, ["desa","jarak_kec","jarak_kab"], 30);
+isiTabelMultiPage("tabel2_2_2", tabel2_2_2, ["tingkatPendidikan","lakiLaki","perempuan","total"], 30);
 
 alert(data.namaKecamatan + " selesai!");
