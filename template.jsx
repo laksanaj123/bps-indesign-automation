@@ -2,29 +2,26 @@
 
 var doc = app.activeDocument;
 
-var data = {
-    namaKecamatan: '{namaKecamatan}',
-    namaKec_Kapital: '{namaKec_Kapital}',
-    nomorVolume: '{nomorVolume}',
-    nomorKatalog: '{nomorKatalog}',
-    nomorPublikasi: '{nomorPublikasi}',
-    namaPenyunting: '{namaPenyunting}',
-    namaPenulis: '{namaPenulis}',
-    namaLayouter: '{namaLayouter}',
-    namaPenerjemah: '{namaPenerjemah}',
-    namaPemeriksa: '{namaPemeriksa}',
-    tabel222lakiLaki: '{tabel222lakiLaki}',
-    tabel222perempuan: '{tabel222perempuan}',
-    tabel222total: '{tabel222total}',
-    tabel223lakiLaki: '{tabel223lakiLaki}',
-    tabel223perempuan: '{tabel223perempuan}',
-    tabel223total: '{tabel223total}',
-};
+const keys = [
+  "namaKecamatan", "namaKec_Kapital", "nomorVolume", "nomorKatalog",
+  "nomorPublikasi", "namaPenyunting", "namaPenulis", "namaLayouter",
+  "namaPenerjemah", "namaPemeriksa", "tabel222lakiLaki", "tabel222perempuan", "tabel222total", "tabel223lakiLaki", "tabel223perempuan", "tabel223total", "tabel228lakiLaki", "tabel228perempuan", "tabel228total", "tabel229lakiLaki", "tabel229perempuan", "tabel229total", "dataDesaCeraiPA", "dataDesaTalakPA", "dataDesaalokasiDanaDesa", "dataDesadanaDesa", "dataDesaLahirLakiLakiDisdukcapil", "dataDesaLahirPerempuanDisdukcapil", "dataDesamatiLakiLakiDisdukcapil", "dataDesamatiPerempuanDisdukcapil", "dataDesaDatangLakiLakiDisdukcapil", "dataDesaDatangPerempuanDisdukcapil", "dataDesaKeluarLakiLakiDisdukcapil", "dataDesaKeluarPerempuanDisdukcapil", "dataDesawniDisdukcapil", "dataDesawnaDisdukcapil", "dataDesapendudukLakiLakiDisdukcapil", "dataDesapendudukPerempuanDisdukcapil", "dataDesapendudukJumlahDisdukcapil", "dataDesawajibKtpDisdukcapil", "dataDesamemilikiKtpDisdukcapil", "dataDesabelumMemilikiKtpDisdukcapil", "dataDesapersentaseMemilikiKtpDisdukcapil", "dataDesawajibKkDisdukcapil", "dataDesamemilikiKkDisdukcapil", "dataDesabelumMemilikiKkDisdukcapil", "dataDesaislamDisdukcapil", "dataDesakristenDisdukcapil", "dataDesakatholikDisdukcapil", "dataDesahinduDisdukcapil", "dataDesabuddhaDisdukcapil", "dataDesakhonghucuDisdukcapil", "dataDesaagamaLainnyaDisdukcapil", "dataDesaluasWilayahDesa", "dataDesapersentaseLuasWilayahDesa"
+];
 
-var tabel1_1 = {tabel1_1};
-var tabel1_2 = {tabel1_2};
+const data = keys.reduce((acc, key) => {
+  acc[key] = `{${key}}`;
+  return acc;
+}, {});
+
+var tabel1_1_1 = {tabel1_1_1};
+var tabel1_1_2 = {tabel1_1_2};
 var tabel2_2_2 = {tabel2_2_2};
 var tabel2_2_3 = {tabel2_2_3};
+var tabel2_2_8 = {tabel2_2_8};
+var tabel2_2_9 = {tabel2_2_9};
+var tabel3_1_3 = {tabel3_1_3};
+var tabel3_1_4 = {tabel3_1_4};
+var tabel3_1_5 = {tabel3_1_5};
 
 // ... tambahkan tabel lain jika perlu
 
@@ -96,10 +93,15 @@ function isiTabel(placeholder, dataArr, colMap) {
     }
 }
 
-isiTabel("Tabel_1_1", tabel1_1, ["desa","luas","persen"]);
-isiTabel("Tabel_1_2", tabel1_2, ["desa","jarak_kec","jarak_kab"]);
+isiTabel("Tabel1_1_1", tabel1_1_1, ["namaDesa","luasWilayahDesa","persentaseLuasWilayahDesa"]);
+isiTabel("Tabel1_1_2", tabel1_1_2, ["desa","jarak_kec","jarak_kab"]);
 isiTabel("tabel2_2_2", tabel2_2_2, ["tingkatPendidikan","lakiLaki","perempuan","total"]);
 isiTabel("tabel2_2_3", tabel2_2_3, ["tingkatPendidikan","lakiLaki","perempuan","total"]);
+isiTabel("tabel2_2_8", tabel2_2_8, ["tingkatPendidikan","lakiLaki","perempuan","total"]);
+isiTabel("tabel2_2_9", tabel2_2_9, ["tingkatPendidikan","lakiLaki","perempuan","total"]);
+isiTabel("tabel3_1_3", tabel3_1_3, ["kodeDesa","namaDesa","wajibKtpDisdukcapil","memilikiKtpDisdukcapil","belumMemilikiKtpDisdukcapil"]);
+isiTabel("tabel3_1_4", tabel3_1_4, ["kodeDesa","namaDesa","wajibKkDisdukcapil","memilikiKkDisdukcapil","belumMemilikiKkDisdukcapil"]);
+isiTabel("tabel3_1_5", tabel3_1_5, ["kodeDesa","namaDesa","wniDisdukcapil","wnaDisdukcapil"]);
 // ... panggil isiTabel untuk tabel lain jika perlu
 
 alert("{namaKecamatan} Selesai!");

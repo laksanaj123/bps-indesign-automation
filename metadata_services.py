@@ -25,4 +25,26 @@ def build_metadata(nama_kecamatan, first_row, group, dataDesa, dataKesehatan, da
                     "lakiLaki", "perempuan", "total"
                 ]
             },
+        **{
+                f'tabel228{col}': to_indo_number_without_comma(str(dataMerge[dataMerge['kategori'] == "jumlahPnsBerdasarkanGolongan"][col].sum()))
+                for col in [
+                    "lakiLaki", "perempuan", "total"
+                ]
+            },
+        **{
+                f'tabel229{col}': to_indo_number_without_comma(str(dataMerge[dataMerge['kategori'] == "jumlahPppkBerdasarkanGolongan"][col].sum()))
+                for col in [
+                    "lakiLaki", "perempuan", "total"
+                ]
+            },
+        **{
+                f'dataDesa{col}': to_indo_number_without_comma(str(dataDesa[col].sum()))
+                for col in [
+                    "CeraiPA", "TalakPA", "alokasiDanaDesa", "danaDesa", "LahirLakiLakiDisdukcapil", "LahirPerempuanDisdukcapil", "matiLakiLakiDisdukcapil", "matiPerempuanDisdukcapil", "DatangLakiLakiDisdukcapil", "DatangPerempuanDisdukcapil", "KeluarLakiLakiDisdukcapil", "KeluarPerempuanDisdukcapil", "wniDisdukcapil", "wnaDisdukcapil", "pendudukLakiLakiDisdukcapil", "pendudukPerempuanDisdukcapil", "pendudukJumlahDisdukcapil", "wajibKtpDisdukcapil", "memilikiKtpDisdukcapil", "belumMemilikiKtpDisdukcapil", "persentaseMemilikiKtpDisdukcapil", "wajibKkDisdukcapil", "memilikiKkDisdukcapil", "belumMemilikiKkDisdukcapil", "islamDisdukcapil", "kristenDisdukcapil", "katholikDisdukcapil", "hinduDisdukcapil", "buddhaDisdukcapil", "khonghucuDisdukcapil", "agamaLainnyaDisdukcapil"
+                ]
+            },
+        **{
+                f'dataDesa{col}': to_indo_number(f"{dataDesa[col].sum():.2f}")
+                    for col in ["luasWilayahDesa", "persentaseLuasWilayahDesa"]
+            },
     }

@@ -30,10 +30,11 @@ os.makedirs(output_folder, exist_ok=True)
 
 for nama_kecamatan, group in grouped:
     # Filter Data desa
-    dataDesa = dfDataDesa[dfDataDesa["namaKecamatan"] == nama_kecamatan].sort_values(by='kodeDesa')
+    dataDesa = dfDataDesa[dfDataDesa["namaKecamatan"] == nama_kecamatan].sort_values( by=['statusDesKel', 'kodeDesa'], ascending=[False, True])
     dataKesehatan = dfDataKesehatan[dfDataKesehatan["namaKecamatan"] == nama_kecamatan].sort_values(by='kodeDesa')
     dataMerge = dfDataMerge[dfDataMerge["namaKecamatan"] == nama_kecamatan]
     # print(nama_kecamatan)
+    # print(dataDesa)
     script = template  # copy template
     first = group.iloc[0]
 
