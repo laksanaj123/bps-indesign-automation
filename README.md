@@ -19,17 +19,17 @@ Hasilnya adalah script JSX yang dapat langsung dijalankan di InDesign untuk meng
 
 ```
 bps-indesign-automation/
-├── generate_script.py           # Script utama yang menjalankan seluruh proses
+├── run_all.py                   # Script utama: copy folder + generate JSX + buat runner
+├── generate_script.py           # Script generate JSX saja (tanpa copy folder)
 ├── generate_script.ipynb        # Notebook untuk eksperimen (opsional)
 ├── table_builders.py            # Fungsi-fungsi untuk membangun struktur tabel
 ├── table_services.py            # Service untuk inject data tabel ke template
 ├── metadata_services.py         # Service untuk membangun metadata publikasi
-├── template.jsx                 # Template JSX lama (backup)
-├── template_new.jsx             # Template JSX yang aktif digunakan
-├── generate_jsx/                # Output folder dengan script JSX yang sudah di-generate
-│   ├── 6105020001.jsx          # Script per desa
-│   ├── Balai.jsx               # Script per kecamatan
-│   └── ... (lebih banyak file)
+├── template.jsx                 # Template JSX (berisi placeholder + fungsi isiTabel)
+├── generate_jsx/                # Output folder script JSX yang sudah di-generate
+│   ├── Balai.jsx
+│   ├── Beduai.jsx
+│   └── ...
 └── README.md                    # File ini
 ```
 
@@ -37,20 +37,24 @@ bps-indesign-automation/
 
 ## 🔧 Komponen Utama
 
-### 1. **generate_script.py** 🚀
-Script utama yang mengorkestra seluruh proses:
+### 1. **run_all.py** 🚀
+Script utama yang menjalankan **seluruh otomasi dalam satu kali jalan**:
 
 ```python
-# Alur kerja:
-1. Ambil data dari Google Sheets (metadata publikasi)
-2. Ambil data dari Google Sheets (data wilayah/desa per kecamatan)
-3. Kelompokkan data per kecamatan
-4. Untuk setiap kecamatan:
-   - Buat metadata dari data baris pertama
-   - Replace placeholder di template dengan metadata
-   - Inject tabel data
-   - Simpan hasil sebagai file JSX
+# Alur kerja run_all.py:
+1. Ambil data dari Google Sheets (metadata, desa, kesehatan, merge)
+2. Kelompokkan data per kecamatan
+3. Untuk setiap kecamatan:
+   a. Salin folder [Fix] Template KCDA 2026 → {namaKecamatan}/
+   b. Build metadata dari data baris pertama
+   c. Replace placeholder di template dengan metadata
+   d. Inject tabel data
+   e. Simpan sebagai "Isi Data {namaKecamatan}.jsx"
+4. Generate _RUN_ALL.jsx (master runner untuk InDesign)
 ```
+
+### 2. **generate_script.py** 📝
+Script untuk generate JSX saja (tanpa copy folder). Berguna untuk development/debugging.
 
 **Google Sheets yang digunakan:**
 - **Metadata publikasi** (Sheet ID: 903602598): Informasi tentang penulis, layouter, penyunting, dll.
@@ -132,6 +136,7 @@ Python 3.7+
 pandas
 numpy
 requests
+Adobe InDesign (untuk langkah ke-2)
 ```
 
 ### Instalasi
@@ -143,22 +148,78 @@ cd bps-indesign-automation
 pip install pandas numpy requests
 ```
 
-### Menjalankan Script
+### Workflow Lengkap (run_all.py)
 
-**Opsi 1: Jalankan Python Script**
+Script `run_all.py` menjalankan **seluruh proses otomasi dalam satu kali jalan**:
+
+```bash
+python run_all.py
+```
+
+**Yang dilakukan `run_all.py`:**
+1. Mengambil data dari Google Sheets (metadata, desa, kesehatan, merge)
+2. Untuk setiap kecamatan:
+   - Menyalin folder template `[Fix] Template KCDA 2026` → `Draf Edit Publikasi/{namaKecamatan}/`
+   - Membuat file JSX berisi data kecamatan → `Isi Data {namaKecamatan}.jsx`
+3. Membuat file `_RUN_ALL.jsx` (master runner untuk InDesign)
+
+**Struktur folder hasil:**
+```
+Draf Edit Publikasi/
+├── [Fix] Template KCDA 2026/          ← Template asli (tidak diubah)
+├── Balai/
+│   ├── 00 Cover Depan.indd
+│   ├── 01 Halaman Depan.indd
+│   ├── Bab01.indd ... Bab07.indd
+│   ├── Links/
+│   ├── Document fonts/
+│   └── Isi Data Balai.jsx             ← JSX dengan data Balai
+├── Beduai/
+│   ├── ... (sama seperti di atas)
+│   └── Isi Data Beduai.jsx
+├── Bungur/
+│   └── ...
+├── ... (satu folder per kecamatan)
+└── _RUN_ALL.jsx                       ← Master runner
+```
+
+### Menjalankan Isi Data ke InDesign
+
+Setelah `run_all.py` selesai, jalankan langkah berikut:
+
+1. Buka **Adobe InDesign**
+2. Buka panel **Scripts**: `Window → Utilities → Scripts`
+3. Klik kanan di panel Scripts → **Reveal in Explorer** (Windows) / **Reveal in Finder** (Mac)
+4. Copy file `_RUN_ALL.jsx` ke folder Scripts Panel yang terbuka
+5. **Jalankan `_RUNALL.jsx`** dari panel Scripts
+
+**Yang dilakukan `_RUN_ALL.jsx`:**
+- Loop ke semua folder kecamatan di `Draf Edit Publikasi/`
+- Untuk setiap folder, buka semua file `.indd`
+- Jalankan script `Isi Data {namaKecamatan}.jsx` → mengganti `{{placeholder}}` + mengisi tabel
+- **Simpan dan tutup** otomatis
+- Menampilkan log hasil di akhir
+
+### Workflow Manual (opsional)
+
+Jika ingin menjalankan per kecamatan secara manual:
+
+**Opsi 1: Generate JSX saja**
 ```bash
 python generate_script.py
 ```
+Output: file JSX di folder `generate_jsx/`
 
 **Opsi 2: Jalankan dari Jupyter Notebook (untuk development/debugging)**
 ```bash
 jupyter notebook generate_script.ipynb
 ```
 
-### Output
-- Script JSX akan di-generate di folder `generate_jsx/`
-- Satu file JSX untuk setiap kecamatan
-- File siap digunakan di InDesign
+**Cara manual jalankan JSX di InDesign:**
+1. Buka file `.indd` di InDesign
+2. Buka panel Scripts (`Window → Utilities → Scripts`)
+3. Drag & drop atau jalankan script `Isi Data {namaKecamatan}.jsx`
+4. Simpan dokumen
 
 ---
 
@@ -176,30 +237,40 @@ jupyter notebook generate_script.ipynb
                │
                ▼
 ┌─────────────────────────────────┐
-│   generate_script.py            │
+│   run_all.py                    │
 │   - Ambil data dari Google      │
 │   - Kelompokkan per kecamatan   │
 └──────────────┬──────────────────┘
                │
                ▼ (Untuk setiap kecamatan)
 ┌─────────────────────────────────┐
-│   metadata_services.py          │  ← Build metadata
+│   1. Copy template folder       │  ← Salin [Fix] Template KCDA 2026
+│      → {namaKecamatan}/         │     ke Draf Edit Publikasi/
 └──────────────┬──────────────────┘
                │
                ▼
 ┌─────────────────────────────────┐
-│   template_new.jsx              │  ← Replace metadata
+│   2. Generate JSX               │  ← metadata + tabel di-inject
+│      → Isi Data {nama}.jsx      │
 └──────────────┬──────────────────┘
                │
                ▼
 ┌─────────────────────────────────┐
-│   table_builders.py             │  ← Build tabel data
-│   table_services.py             │  ← Inject tabel ke template
+│   3. Buat _RUN_ALL.jsx          │  ← Master runner untuk InDesign
+└──────────────┬──────────────────┘
+               │
+               ▼ (Jalankan di InDesign)
+┌─────────────────────────────────┐
+│   _RUN_ALL.jsx                  │
+│   - Buka setiap folder kecamatan│
+│   - Buka setiap file .indd      │
+│   - Jalankan Isi Data JSX       │  ← Replace {{placeholder}} + isi tabel
+│   - Simpan & tutup              │
 └──────────────┬──────────────────┘
                │
                ▼
 ┌─────────────────────────────────┐
-│   generate_jsx/[Kecamatan].jsx  │  ◄─ JSX Script siap pakai
+│   Dokumen InDesign siap pakai   │  ◄─ Data sudah terisi semua
 └─────────────────────────────────┘
 ```
 
@@ -255,10 +326,14 @@ df["namaPenyunting_joint"] = df["namaPenyunting"].str.replace(", ", " • ")
 | Masalah | Solusi |
 |---------|--------|
 | `Gagal akses spreadsheet` | Cek URL dan Sheet ID, pastikan spreadsheet publik |
-| `Module not found` | Install dependencies: `pip install -r requirements.txt` |
+| `Module not found` | Install dependencies: `pip install pandas numpy requests` |
 | `Encoding error` | Pastikan file menggunakan UTF-8 |
-| `Placeholder tidak diganti` | Cek format placeholder, pastikan sesuai di template |
+| `Placeholder tidak diganti` | Cek format placeholder di .indd, pastikan pakai `{{namaKecamatan}}` (double curly brace) |
 | `Data kosong di tabel` | Cek data di Google Sheets, pastikan kolom tersedia |
+| `Folder sudah ada, skip copy` | Normal. Folder kecamatan yang sudah ada tidak akan ditimpa |
+| `_RUN_ALL.jsx tidak jalan` | Pastikan file di-copy ke folder Scripts Panel InDesign, bukan dijalankan dari Explorer |
+| `JSX error di InDesign` | Buka file .indd dulu sebelum jalankan JSX. Pastikan dokumen aktif |
+| `File .indd tidak terbuka` | Pastikan tidak ada file .indd yang sedang terbuka di InDesign sebelum jalankan _RUN_ALL |
 
 ---
 
